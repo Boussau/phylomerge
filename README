@@ -1,3 +1,5 @@
+PhyloMerge is a program used to merge partial gene sequences if they belong to the same species. PhyloMerge can either pick one sequence (e.g. the longest) or it can merge monophyletic sequences into one longer sequence. It can also rearrange the gene tree on poorly supported bipartitions to group together sequences from some species of interest that may have been misplaced in the gene tree.
+
 Usage:
 phylomerge input.sequence.file=XX.fasta input.method=tree input.tree.file=XX.tree choice.criterion=merge taxon.to.sequence=XX.reverselink  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=XX_Selected.fas rearrange.tree=y bootstrap.threshold=0.7
 
@@ -10,8 +12,8 @@ sequence.to.taxon=linkfile : giving the link between gene names and taxon names.
 species.to.remove= file containing set of species from which sequences should be removed
 prescreening.on.size.by.taxon=“no" : removes the sequences that are very short compared to other sequences of the same species. If there is only one sequence in this species, it is not removed.
 output.sequence.file=refined.fasta : output alignment refined by the software
-rearrange.tree=y : rearranges the tree at nodes with low support to group together sequences from the same species
-bootstrap.threshold=0.7 : threshold below which a node may be rearranged
+rearrange.tree=y : rearranges the tree at bipartitions with low support to group together sequences from the same species
+bootstrap.threshold=0.7 : threshold below which a bipartition may be rearranged
 
 Send me an email if you need more explanations: boussau@gmail.com
 
