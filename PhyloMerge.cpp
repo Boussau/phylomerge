@@ -1015,15 +1015,27 @@ string name )
 	}
 	else if (critMeth == "merge")
 	{
-		string seq = buildMergedSequence (descendantSequences, seqs);
-		BasicSequence
-			bseq =
-			BasicSequence (name + "_" + descendantSequences[0], seq,
-			seqs.getAlphabet ());
-		//MYSTERY
-		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
-			seqs.addSequence (bseq);
-		return name + "_" + descendantSequences[0];
+//      Code commented that used to rename sequences
+//		string seq = buildMergedSequence (descendantSequences, seqs);
+//		BasicSequence
+//			bseq =
+//			BasicSequence (name + "_" + descendantSequences[0], seq,
+//			seqs.getAlphabet ());
+//		//MYSTERY
+//		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
+//			seqs.addSequence (bseq);
+//		return name + "_" + descendantSequences[0];
+        
+        string seq = buildMergedSequence (descendantSequences, seqs);
+        BasicSequence
+        bseq =
+        BasicSequence (descendantSequences[0], seq,
+                       seqs.getAlphabet ());
+        //MYSTERY
+        if (!seqs.hasSequence (descendantSequences[0]))
+            seqs.addSequence (bseq);
+        return descendantSequences[0];
+
 	}
 	else
 		throw Exception ("Unknown criterion: " + critMeth);
@@ -2605,10 +2617,10 @@ main (int args, char **argv)
 				seqNames.size ());
             //Now we output a file containing the link between species name and sequence name
             TreeTemplate < Node > *treeCopy = tree->clone();
-            std::vector<Node*> leaves = treeCopy->getLeaves();
-            for (size_t i = 0; i < leaves.size(); ++i) {
-                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
-            }
+//            std::vector<Node*> leaves = treeCopy->getLeaves();
+//            for (size_t i = 0; i < leaves.size(); ++i) {
+//                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
+//            }
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
             {
@@ -2616,7 +2628,7 @@ main (int args, char **argv)
                 myfile.open (outputLinkFile);
                 for (size_t i = 0; i < seqNames.size(); ++i) {
                     std::string seqName = seqNames[i];
-                    myfile <<seqNames[i] << " : "<< (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () <<std::endl;
+                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () << " : " << seqNames[i] <<std::endl;
                 }
                 myfile.close();
             }
