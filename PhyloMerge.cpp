@@ -130,7 +130,9 @@ help ()
 		();
 	(*ApplicationTools::
 		message << " - output.sequence.file=refined alignment").endLine ();
-
+    (*ApplicationTools::message <<
+     " - output.taxon.to.sequence=outputlinkfile: format: species name: sequence name.").endLine
+    ();
 	(*ApplicationTools::message <<
 		"__________________________________________________________________________").endLine
 		();
@@ -2601,6 +2603,23 @@ main (int args, char **argv)
 
 			ApplicationTools::displayResult ("Number of sequences kept:",
 				seqNames.size ());
+            //Now we output a file containing the link between species name and sequence name
+            TreeTemplate < Node > *treeCopy = tree->clone();
+            std::vector<Node*> leaves = treeCopy->getLeaves();
+            for (size_t i = 0; i < leaves.size(); ++i) {
+                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
+            }
+            std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
+            if (outputLinkFile != "none")
+            {
+                ofstream myfile;
+                myfile.open (outputLinkFile);
+                for (size_t i = 0; i < seqNames.size(); ++i) {
+                    std::string seqName = seqNames[i];
+                    myfile <<seqNames[i] << " : "<< (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () <<std::endl;
+                }
+                myfile.close();
+            }
 		}
 		else
 			throw Exception ("Unknown deletion method: " + deleteMeth + ".");

@@ -1,5 +1,5 @@
 #### Test 1: testing that we remove sequences; 3 complete sequences expected
-for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=test.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas ; done
+for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=test.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas output.taxon.to.sequence=testTaxToSeq.link ; done
 
 #### Test 2: testing that we don't always remove the first sequence; 9 sequences expected
 for i in test2.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=${i/.fa}.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas ; done
