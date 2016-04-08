@@ -2628,7 +2628,7 @@ main (int args, char **argv)
                 myfile.open (outputLinkFile);
                 for (size_t i = 0; i < seqNames.size(); ++i) {
                     std::string seqName = seqNames[i];
-                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () << " : " << seqNames[i] <<std::endl;
+                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () << ":" << seqNames[i] <<std::endl;
                 }
                 myfile.close();
             }
