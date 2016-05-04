@@ -302,9 +302,9 @@ string name = "");
 
 void simplifyMultifurcations(TreeTemplate < Node > &tree,
   std::map < std::string, std::string > &seqSp,
-  string critMeth, 
+  string critMeth,
   VectorSiteContainer & seqs) {
- 
+
   vector<Node*> nodes = tree.getNodes();
   for (auto n =nodes.begin(); n!=nodes.end();++n) {
     if ((*n)->getNumberOfSons() > 2 ) {
@@ -313,12 +313,12 @@ void simplifyMultifurcations(TreeTemplate < Node > &tree,
       std::vector<std::string> sonSeqs ;
         for (auto s =sons.begin(); s!=sons.end();++s) {
           if (!(*s)->isLeaf()) {
-          std::cout << "Sorry, cannot handle multifurcations involving inner nodes"<<std::endl; 
+          std::cout << "Sorry, cannot handle multifurcations involving inner nodes"<<std::endl;
           exit(-1);
           }
           if (species == "")
           {
-          species = seqSp.at((*s)->getName() ); 
+          species = seqSp.at((*s)->getName() );
           sonSeqs.push_back((*s)->getName() ) ;
           }
           else if (species != seqSp.at( (*s)->getName() ) ){
@@ -346,7 +346,7 @@ void simplifyMultifurcations(TreeTemplate < Node > &tree,
         (*n)->addSon(No);
         No->setDistanceToFather (0.12345);*/
     }
-    tree.resetNodesId();    
+    tree.resetNodesId();
   }
     std::cout << "After removing multifurcations, we have "<<tree.getNumberOfLeaves()<<" leaves." << std::endl;
 return;
@@ -366,7 +366,7 @@ const std::map < std::string, std::string > &seqSp)
 	//TWO: subtree defined by parent and son 1
 	//THREE: subtree defined by son 0 and son 1.
 
-  
+
 	postOrderAnnotateNodesWithTaxa (tree, tree.getRootNode (), seqSp);
 
 	//Filling the 2 missing properties at the root
@@ -435,7 +435,7 @@ getBootstrapValueOnBranchBetweenTheseTwoNodes (Node * it, Node * next)
 		}
 		else return 0.0;
 	}
-	
+
 
 }
 
@@ -557,13 +557,13 @@ group (Node * newBrother, Node * cutNode, TreeTemplate < Node > &tree)
     if ( ! cutNode->hasBootstrapValue () ) {
      cutNode->setBranchProperty(TreeTools::BOOTSTRAP, noSupport );
     }
-    
+
     /*
 		// update N neighbours
 		if (!wasRoot)
 		{
 			for (unsigned int i = 0; i < newBrothersFather->getNumberOfSons ();
-				i++) 
+				i++)
 			if (newBrothersFather->getSon (i) == newBrother)
 			{
 				newBrothersFather->setSon (i, N);
@@ -717,7 +717,7 @@ const std::map < std::string, std::string > &seqSp)
 	{
 		if (isNodeFromSpecies (*node, species))
 			nodesOfSpecies.push_back (*node);
-	}  
+	}
 	//Now we have a subset of nodes from species "species".
 	if (nodesOfSpecies.size () == 1) //only one node
 	{
@@ -741,7 +741,7 @@ const std::map < std::string, std::string > &seqSp)
 			{
 
 				//We reroot the tree by a leaf : NOT SURE WHETHER IT IS USEFUL OR NOT. LEADS TO SEGFAULTS BECAUSE CAN DELETE NODE.
-			/*	Node * 
+			/*	Node *
 					newOutgroup = tree.getLeaves ()[0];
 				tree.newOutGroup (newOutgroup);
 				if (!tree.isRooted ())
@@ -776,7 +776,7 @@ const std::map < std::string, std::string > &seqSp)
 				annotateTreeWithSpecies (tree, seqSp);
 
 			}
-			
+
 			vector < Node * >path =
 				TreeTemplateTools::getPathBetweenAnyTwoNodes (*
 				(connectedNodes[i]
@@ -904,11 +904,11 @@ const double &bootstrapThreshold)
 			++it)
 		{
 			std::cout << "Working with species: " << *it << std::endl;
-      if (species.find(*it) != species.end() ) 
+      if (species.find(*it) != species.end() )
       {
         if (*it != "") {
           bool rearrangementsAreDone = true;
-          while (rearrangementsAreDone) 
+          while (rearrangementsAreDone)
             rearrangementsAreDone = groupSequencesFromSpecies (tree, *it, bootstrapThreshold, seqSp);
         }
       }
@@ -925,7 +925,7 @@ const double &bootstrapThreshold)
 		{
 			if (*it != "") {
         bool rearrangementsAreDone = true;
-        while (rearrangementsAreDone) 
+        while (rearrangementsAreDone)
           rearrangementsAreDone = groupSequencesFromSpecies (tree, *it, bootstrapThreshold, seqSp);
       }
 		}
@@ -1025,7 +1025,7 @@ string name )
 //		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
 //			seqs.addSequence (bseq);
 //		return name + "_" + descendantSequences[0];
-        
+
         string seq = buildMergedSequence (descendantSequences, seqs);
         BasicSequence
         bseq =
@@ -1117,7 +1117,7 @@ double >&sequenceDistances)
 
 
 void lookForMoreDownstreamSequencesFromSpecies(Node* node, std::vector<std::string>& temp, std::string& species) {
-  
+
   if (node->isLeaf()) {
       if ( (dynamic_cast <
           const BppString *
@@ -1157,7 +1157,7 @@ void lookForMoreDownstreamSequencesFromSpecies(Node* node, std::vector<std::stri
 
 
 
-void updateSequencesAlreadyHandled (vector<string>& sequencesAlreadyHandled, vector<string>& sequencesAboutToBeHandled) 
+void updateSequencesAlreadyHandled (vector<string>& sequencesAlreadyHandled, vector<string>& sequencesAboutToBeHandled)
 {
     vector<string> inter = VectorTools::vectorIntersection<string>(sequencesAlreadyHandled, sequencesAboutToBeHandled);
     if (!inter.empty() ) {
@@ -1178,8 +1178,8 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 /*,
 																										   const map <string, double>& sequenceDistances) */
 {
-
-	//std::cout << TreeTemplateTools::treeToParenthesis( tree, true  ) <<std::endl;
+std::cout << "selectSequencesToKeep "<<std::endl;
+	std::cout << TreeTemplateTools::treeToParenthesis( tree, true  ) <<std::endl;
 
 	vector < string > selectedSeqs;
 	string
@@ -1198,20 +1198,26 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 	vector < string > seqs1;
 	map < string, double >
 		sequenceDistances;
+		std::cout << "selectSequencesToKeep 2"<<std::endl;
 
-  //std::cout << "BEFORE all: "<< nodeTaxa1 << " and " << nodeTaxa2 << " and " << nodeTaxa3 << std::endl;
+  std::cout << "BEFORE all: "<< nodeTaxa1 << " and " << nodeTaxa2 << " and " << nodeTaxa3 << std::endl;
 
 	if (!node->isLeaf ())
 	{							 //If not at a leaf
 		//Here we assume bifurcation.
+		std::cout << "selectSequencesToKeep 3"<<std::endl;
+
 		seqs0 = TreeTemplateTools::getLeavesNames (*(node->getSon (0)));
 		seqs1 = TreeTemplateTools::getLeavesNames (*(node->getSon (1)));
+		std::cout << "selectSequencesToKeep 4"<<std::endl;
+
 	}
 	else
 	{
 	}
 	if (node->hasFather ())
 	{							 //Not at the root
+		std::cout << "NODE HAS FATHER" << std::endl;
 		if (nodeTaxa1 != "#")
 		{						 //If father node and son0 node come from the same taxon
 			bool sampleHere = true;
@@ -1309,6 +1315,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 
 			}
 		}
+		std::cout << "selectSequencesToKeep 5"<<std::endl;
 
 		if (nodeTaxa2 != "#")
 		{
@@ -1405,6 +1412,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 
 			}
 		}
+		std::cout << "selectSequencesToKeep 6"<<std::endl;
 
 		if (nodeTaxa3 != "#")
 		{
@@ -1540,6 +1548,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 	}
 	else
 	{							 //At the root
+		std::cout << "AT THE ROOT" <<std::endl;
 		if (nodeTaxa1 == nodeTaxa2 && nodeTaxa1 == nodeTaxa3	&& nodeTaxa1 != "#")
 		{						 //All the sequences are from the same taxon
 			vector < string > temp = VectorTools::vectorUnion (seqs0, seqs1);
@@ -1570,6 +1579,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 			//we may have to sample the root sequence
 			if (node->isLeaf ()) //Root node is a leaf
 			{
+				std::cout << "Root node is a leaf" <<std::endl;
 				string
 					nodeSon0Taxa1 =
 					((dynamic_cast <
@@ -1587,7 +1597,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 
 					if (speciesToRefine.count (nodeTaxa1) != 0
 						|| speciesToRefine.size () == 0)
-					{          
+					{
           updateSequencesAlreadyHandled(sequencesAlreadyHandled, temp);
                   if (! temp.empty() ) {
 						if (critMeth == "merge")
@@ -1637,6 +1647,11 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 			}
 			else
 			{					 //Root Node is not a leaf
+				std::cout << "Root node is NOT a leaf" <<std::endl;
+				std::cout << "NumSons: "<< node->getNumberOfSons() << std::endl;
+				std::cout << "Son 0: "<< node->getSon (0)->getId() << std::endl;
+				std::cout << "Son 1: "<< node->getSon (1)->getId() << std::endl;
+
 				string
 					nodeSon0Taxa1 =
 					((dynamic_cast <
@@ -1657,7 +1672,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 					((dynamic_cast <
 					const BppString *
 					>(node->getSon (1)->getNodeProperty (TWO)))->toSTL ());
-				  //std::cout << "nodeSon0Taxa1: "<< nodeSon0Taxa1 << " and " << nodeSon0Taxa2 << " and " << nodeSon1Taxa1 << " and " << nodeSon1Taxa2 <<std::endl;
+				  std::cout << "nodeSon0Taxa1: "<< nodeSon0Taxa1 << " and " << nodeSon0Taxa2 << " and " << nodeSon1Taxa1 << " and " << nodeSon1Taxa2 <<std::endl;
 
 				if (nodeSon0Taxa1 != "#" || nodeSon0Taxa2 != "#"
 					|| nodeSon1Taxa1 != "#" || nodeSon1Taxa2 != "#")
@@ -1701,17 +1716,19 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 						{
 							VectorTools::append (selectedSeqs, temp);
 						}
+						if ( !node->getSon (0)->isLeaf ())
+						{
 						//Continue the recursion
-						VectorTools::append (selectedSeqs,
-							selectSequencesToKeep (tree,
-							node->getSon
-							(0)->getSon
-							(1),
-							sequencesAncestor,
-							critMeth,
-							seqs,
-							speciesToRefine, sequencesAlreadyHandled));
-
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(0)->getSon
+								(1),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
 					}
 					else if (nodeSon0Taxa2 != "#")
 					{
@@ -1756,16 +1773,19 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 						{
 							VectorTools::append (selectedSeqs, temp);
 						}
-						//Continue the recursion
-						VectorTools::append (selectedSeqs,
-							selectSequencesToKeep (tree,
-							node->getSon
-							(0)->getSon
-							(0),
-							sequencesAncestor,
-							critMeth,
-							seqs,
-							speciesToRefine, sequencesAlreadyHandled));
+						if ( !node->getSon (0)->isLeaf ())
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(0)->getSon
+								(0),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
 					}
 					else if (nodeSon1Taxa1 != "#")
 					{
@@ -1808,16 +1828,19 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 						{
 							VectorTools::append (selectedSeqs, temp);
 						}
-						//Continue the recursion
-						VectorTools::append (selectedSeqs,
-							selectSequencesToKeep (tree,
-							node->getSon
-							(1)->getSon
-							(1),
-							sequencesAncestor,
-							critMeth,
-							seqs,
-							speciesToRefine, sequencesAlreadyHandled));
+						if ( !node->getSon (1)->isLeaf ())
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(1)->getSon
+								(1),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
 					}
 					else if (nodeSon1Taxa2 != "#")
 					{
@@ -1859,6 +1882,8 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 						{
 							VectorTools::append (selectedSeqs, temp);
 						}
+						if ( !node->getSon (1)->isLeaf ())
+						{
 						//Continue the recursion
 						VectorTools::append (selectedSeqs,
 							selectSequencesToKeep (tree,
@@ -1869,7 +1894,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 							critMeth,
 							seqs,
 							speciesToRefine, sequencesAlreadyHandled));
-
+						}
 					}
 				}
 				else
@@ -1925,6 +1950,8 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 
 		}
 	}
+	std::cout << "selectSequencesToKeep 8"<<std::endl;
+
 	return selectedSeqs;
 }
 
@@ -2574,7 +2601,7 @@ main (int args, char **argv)
 
 			//Check for multifurcations, and remove them
 			simplifyMultifurcations(*tree, seqSp, critMeth, *seqs);
-			
+
 			//If we want to rearrange the tree on its unsupported branches
 			bool
 				rearrangeTree =
@@ -2596,10 +2623,10 @@ main (int args, char **argv)
 				refineTree (*tree, seqSp, speciesToRefine, bootstrapThreshold);
         std::cout << "Now, the tree has been rearranged." <<std::endl;
 			}
-			
+
 			std::cout << "Annotating the tree..." <<std::endl;
 			annotateTreeWithSpecies (*tree, seqSp);
-      
+
       //Now the tree has nodes annotated with taxon names
       std::cout << "Rearranged and annotated tree:" <<std::endl;
       Nhx *nhx = new Nhx ();
