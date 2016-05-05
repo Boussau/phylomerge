@@ -1016,25 +1016,25 @@ string name )
 	else if (critMeth == "merge")
 	{
 //      Code commented that used to rename sequences
-//		string seq = buildMergedSequence (descendantSequences, seqs);
-//		BasicSequence
-//			bseq =
-//			BasicSequence (name + "_" + descendantSequences[0], seq,
-//			seqs.getAlphabet ());
-//		//MYSTERY
-//		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
-//			seqs.addSequence (bseq);
-//		return name + "_" + descendantSequences[0];
+		string seq = buildMergedSequence (descendantSequences, seqs);
+		BasicSequence
+			bseq =
+			BasicSequence (name + "_" + descendantSequences[0], seq,
+			seqs.getAlphabet ());
+		//MYSTERY
+		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
+			seqs.addSequence (bseq);
+		return name + "_" + descendantSequences[0];
 
-        string seq = buildMergedSequence (descendantSequences, seqs);
-        BasicSequence
-        bseq =
-        BasicSequence (descendantSequences[0], seq,
-                       seqs.getAlphabet ());
-        //MYSTERY
-        if (!seqs.hasSequence (descendantSequences[0]))
-            seqs.addSequence (bseq);
-        return descendantSequences[0];
+        // string seq = buildMergedSequence (descendantSequences, seqs);
+        // BasicSequence
+        // bseq =
+        // BasicSequence (descendantSequences[0], seq,
+        //                seqs.getAlphabet ());
+        // //MYSTERY
+        // if (!seqs.hasSequence (descendantSequences[0]))
+        //     seqs.addSequence (bseq);
+        // return descendantSequences[0];
 
 	}
 	else
@@ -1178,8 +1178,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 /*,
 																										   const map <string, double>& sequenceDistances) */
 {
-std::cout << "selectSequencesToKeep "<<std::endl;
-	std::cout << TreeTemplateTools::treeToParenthesis( tree, true  ) <<std::endl;
+//	std::cout << TreeTemplateTools::treeToParenthesis( tree, true  ) <<std::endl;
 
 	vector < string > selectedSeqs;
 	string
@@ -1198,18 +1197,14 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 	vector < string > seqs1;
 	map < string, double >
 		sequenceDistances;
-		std::cout << "selectSequencesToKeep 2"<<std::endl;
 
-  std::cout << "BEFORE all: "<< nodeTaxa1 << " and " << nodeTaxa2 << " and " << nodeTaxa3 << std::endl;
+  //std::cout << "BEFORE all: "<< nodeTaxa1 << " and " << nodeTaxa2 << " and " << nodeTaxa3 << std::endl;
 
 	if (!node->isLeaf ())
 	{							 //If not at a leaf
 		//Here we assume bifurcation.
-		std::cout << "selectSequencesToKeep 3"<<std::endl;
-
 		seqs0 = TreeTemplateTools::getLeavesNames (*(node->getSon (0)));
 		seqs1 = TreeTemplateTools::getLeavesNames (*(node->getSon (1)));
-		std::cout << "selectSequencesToKeep 4"<<std::endl;
 
 	}
 	else
@@ -1217,7 +1212,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 	}
 	if (node->hasFather ())
 	{							 //Not at the root
-		std::cout << "NODE HAS FATHER" << std::endl;
 		if (nodeTaxa1 != "#")
 		{						 //If father node and son0 node come from the same taxon
 			bool sampleHere = true;
@@ -1315,8 +1309,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 
 			}
 		}
-		std::cout << "selectSequencesToKeep 5"<<std::endl;
-
 		if (nodeTaxa2 != "#")
 		{
 			bool sampleHere = true;
@@ -1412,7 +1404,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 
 			}
 		}
-		std::cout << "selectSequencesToKeep 6"<<std::endl;
 
 		if (nodeTaxa3 != "#")
 		{
@@ -1548,7 +1539,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 	}
 	else
 	{							 //At the root
-		std::cout << "AT THE ROOT" <<std::endl;
 		if (nodeTaxa1 == nodeTaxa2 && nodeTaxa1 == nodeTaxa3	&& nodeTaxa1 != "#")
 		{						 //All the sequences are from the same taxon
 			vector < string > temp = VectorTools::vectorUnion (seqs0, seqs1);
@@ -1647,11 +1637,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 			}
 			else
 			{					 //Root Node is not a leaf
-				std::cout << "Root node is NOT a leaf" <<std::endl;
-				std::cout << "NumSons: "<< node->getNumberOfSons() << std::endl;
-				std::cout << "Son 0: "<< node->getSon (0)->getId() << std::endl;
-				std::cout << "Son 1: "<< node->getSon (1)->getId() << std::endl;
-
 				string
 					nodeSon0Taxa1 =
 					((dynamic_cast <
@@ -1672,7 +1657,7 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 					((dynamic_cast <
 					const BppString *
 					>(node->getSon (1)->getNodeProperty (TWO)))->toSTL ());
-				  std::cout << "nodeSon0Taxa1: "<< nodeSon0Taxa1 << " and " << nodeSon0Taxa2 << " and " << nodeSon1Taxa1 << " and " << nodeSon1Taxa2 <<std::endl;
+				//  std::cout << "nodeSon0Taxa1: "<< nodeSon0Taxa1 << " and " << nodeSon0Taxa2 << " and " << nodeSon1Taxa1 << " and " << nodeSon1Taxa2 <<std::endl;
 
 				if (nodeSon0Taxa1 != "#" || nodeSon0Taxa2 != "#"
 					|| nodeSon1Taxa1 != "#" || nodeSon1Taxa2 != "#")
@@ -1950,7 +1935,6 @@ std::cout << "selectSequencesToKeep "<<std::endl;
 
 		}
 	}
-	std::cout << "selectSequencesToKeep 8"<<std::endl;
 
 	return selectedSeqs;
 }
@@ -2644,10 +2628,10 @@ main (int args, char **argv)
 				seqNames.size ());
             //Now we output a file containing the link between species name and sequence name
             TreeTemplate < Node > *treeCopy = tree->clone();
-//            std::vector<Node*> leaves = treeCopy->getLeaves();
-//            for (size_t i = 0; i < leaves.size(); ++i) {
-//                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
-//            }
+            std::vector<Node*> leaves = treeCopy->getLeaves();
+            for (size_t i = 0; i < leaves.size(); ++i) {
+                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
+            }
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
             {
@@ -2655,7 +2639,7 @@ main (int args, char **argv)
                 myfile.open (outputLinkFile);
                 for (size_t i = 0; i < seqNames.size(); ++i) {
                     std::string seqName = seqNames[i];
-                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqNames[i])->getNodeProperty (THREE)))->toSTL () << ":" << seqNames[i] <<std::endl;
+                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqName)->getNodeProperty (THREE)))->toSTL () << ":" << seqName <<std::endl;
                 }
                 myfile.close();
             }
@@ -2664,15 +2648,29 @@ main (int args, char **argv)
 			throw Exception ("Unknown deletion method: " + deleteMeth + ".");
 
 		//Write sequences to file:
-		AlignedSequenceContainer asc (alphabet);
-		for (unsigned int i = 0; i < seqNames.size (); i++)
-			if (!asc.hasSequence (seqNames[i]))
-								 //MYSTERY
-				asc.addSequence (seqs->getSequence (seqNames[i]));
+		bool
+			renameSeqs =
+			ApplicationTools::getBooleanParameter ("rename.sequences",
+			phylomerge.getParams (),
+			false, "", true, false);
+			AlignedSequenceContainer asc (alphabet);
+			for (unsigned int i = 0; i < seqNames.size (); i++)
+				if (!asc.hasSequence (seqNames[i]))
+									 //MYSTERY
+					asc.addSequence (seqs->getSequence (seqNames[i]));
 
-		SequenceApplicationTools::writeAlignmentFile (asc,
-			phylomerge.getParams ());
-
+			if (!renameSeqs) { //get back to the simple sequence names
+				std::vector<std::string> sNames = asc.getSequencesNames();
+				std::vector<std::string> nNames ;
+				for (size_t i = 0 ; i < sNames.size (); i++) {
+					std::string fullName = sNames[i];
+					size_t pos = fullName.find("_");
+					std::string shortName = fullName.substr(pos+1);
+					nNames.push_back( shortName );
+				}
+				asc.setSequencesNames ( nNames );
+			}
+			SequenceApplicationTools::writeAlignmentFile (asc, phylomerge.getParams ());
 		if (dist)
 			delete dist;
 		delete tree;
