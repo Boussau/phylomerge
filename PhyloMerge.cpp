@@ -80,6 +80,12 @@ const
 std::string
 THREE = "S";					 //Property used to store the taxon corresponding to son0 and son1 nodes
 
+const
+std::string
+sep = "%";
+
+
+
 //Compilation:
 //g++  -pipe -o phylomerge bppPhyloSampler.cpp -I/usr/local/include  -L. -L/usr/local/lib  -g -Wall -fopenmp -std=c++0x -lbpp-core -lbpp-seq -lbpp-phyl
 
@@ -1019,12 +1025,12 @@ string name )
 		string seq = buildMergedSequence (descendantSequences, seqs);
 		BasicSequence
 			bseq =
-			BasicSequence (name + "_" + descendantSequences[0], seq,
+			BasicSequence (name + sep + descendantSequences[0], seq,
 			seqs.getAlphabet ());
 		//MYSTERY
-		if (!seqs.hasSequence (name + "_" + descendantSequences[0]))
+		if (!seqs.hasSequence (name + sep + descendantSequences[0]))
 			seqs.addSequence (bseq);
-		return name + "_" + descendantSequences[0];
+		return name + sep + descendantSequences[0];
 
         // string seq = buildMergedSequence (descendantSequences, seqs);
         // BasicSequence
@@ -2630,7 +2636,7 @@ main (int args, char **argv)
             TreeTemplate < Node > *treeCopy = tree->clone();
             std::vector<Node*> leaves = treeCopy->getLeaves();
             for (size_t i = 0; i < leaves.size(); ++i) {
-                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + "_" + leaves[i]->getName() );
+                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + sep + leaves[i]->getName() );
             }
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
@@ -2664,7 +2670,7 @@ main (int args, char **argv)
 				std::vector<std::string> nNames ;
 				for (size_t i = 0 ; i < sNames.size (); i++) {
 					std::string fullName = sNames[i];
-					size_t pos = fullName.find("_");
+					size_t pos = fullName.find(sep);
 					std::string shortName = fullName.substr(pos+1);
 					nNames.push_back( shortName );
 				}

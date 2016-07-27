@@ -4,6 +4,8 @@ PhyloMerge is a program used to merge partial gene sequences if they belong to t
 ## Usage:
 phylomerge input.sequence.file=XX.fasta input.method=tree input.tree.file=XX.tree choice.criterion=merge taxon.to.sequence=XX.reverselink  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=XX_Selected.fas rearrange.tree=y bootstrap.threshold=0.7
 
+### NB: sequence and species names should not contain the character "%" used internally by the program.
+
 ## Options:
 input.method=“tree” (could also be a distance matrix with the option “matrix")
 deletion.method=“threshold" or “random” or “sample” or “taxon”. “threshold” removes sequences that are so close in the tree that their distance is lower than the “threshold” value (which is given as another option to the program, default is 0.01). “sample”: random choice of sample_size sequences (default is 10). “taxon”: choice is guided by the identity of the species the sequences come from. In cases several sequences from the same species are monophyletic, a choice will be made according to the “choice.criterion” option
@@ -19,5 +21,3 @@ rename.sequences=false : if set to true, the program will rename the sequences b
 
 ## Contact
 Send me an email if you need more explanations: boussau@gmail.com
-
-
