@@ -1021,13 +1021,11 @@ string name )
 	}
 	else if (critMeth == "merge")
 	{
-//      Code commented that used to rename sequences
 		string seq = buildMergedSequence (descendantSequences, seqs);
 		BasicSequence
 			bseq =
 			BasicSequence (name + sep + descendantSequences[0], seq,
 			seqs.getAlphabet ());
-		//MYSTERY
 		if (!seqs.hasSequence (name + sep + descendantSequences[0]))
 			seqs.addSequence (bseq);
 		return name + sep + descendantSequences[0];
@@ -1181,8 +1179,6 @@ void updateSequencesAlreadyHandled (vector<string>& sequencesAlreadyHandled, vec
  * when there is monophyly, we select/build only one sequence.
  ****************************************************************/
 vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * node, vector < string > &sequencesAncestor, string critMeth, VectorSiteContainer & seqs, unordered_set < string >& speciesToRefine, vector < string >& sequencesAlreadyHandled)
-/*,
-																										   const map <string, double>& sequenceDistances) */
 {
 //	std::cout << TreeTemplateTools::treeToParenthesis( tree, true  ) <<std::endl;
 
@@ -2143,6 +2139,13 @@ main (int args, char **argv)
 			"length");
 		ApplicationTools::displayResult ("Sequence choice criterion", critMeth);
 
+		//Will we rename the sequences:
+		bool
+			renameSeqs =
+			ApplicationTools::getBooleanParameter ("rename.sequences",
+			phylomerge.getParams (),
+			false, "", true, false);
+
 		bool
 			useSpecies =
 			ApplicationTools::getBooleanParameter ("selection.by.taxon",
@@ -2382,12 +2385,9 @@ main (int args, char **argv)
 					}
 					//and we remove from the sequences
 					VectorSiteContainer asc (alphabet);
-					//SOME MYSTERY TO INVESTIGATE WITH FAMILY102
 					for (unsigned int i = 0; i < toKeep.size (); i++)
 						if (!asc.hasSequence (toKeep[i]))
-								 //MYSTERY
 							asc.addSequence (seqs->getSequence (toKeep[i]));
-					//        asc.addSequence(seqs->getSequence(toKeep[i]));
 					delete seqs;
 					seqs = dynamic_cast < VectorSiteContainer * >(asc.clone ());
 				}
@@ -2630,13 +2630,21 @@ main (int args, char **argv)
 				sequencesAncestor, critMeth, *seqs,
 				speciesToRefine, sequencesAlreadyHandled);
 
+				// there are duplicates in seqNames for the sequences of species that have not been refined.
+				// We remove them.
+				seqNames = VectorTools::unique(seqNames);
+
 			ApplicationTools::displayResult ("Number of sequences kept:",
 				seqNames.size ());
+				VectorTools::print(seqNames);
             //Now we output a file containing the link between species name and sequence name
             TreeTemplate < Node > *treeCopy = tree->clone();
             std::vector<Node*> leaves = treeCopy->getLeaves();
             for (size_t i = 0; i < leaves.size(); ++i) {
-                leaves[i]->setName( (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL () + sep + leaves[i]->getName() );
+							std::string spName = (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL ();
+							if (speciesToRefine.count (spName) != 0 || speciesToRefine.size () == 0) {
+                leaves[i]->setName( spName + sep + leaves[i]->getName() );
+							}
             }
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
@@ -2644,8 +2652,13 @@ main (int args, char **argv)
                 ofstream myfile;
                 myfile.open (outputLinkFile);
                 for (size_t i = 0; i < seqNames.size(); ++i) {
-                    std::string seqName = seqNames[i];
-                    myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(seqName)->getNodeProperty (THREE)))->toSTL () << ":" << seqName <<std::endl;
+									std::string fullName = seqNames[i];
+									std::string seqName = fullName;
+									if (!renameSeqs) {
+										size_t pos = fullName.find(sep);
+										seqName = fullName.substr(pos+1);
+									}
+										myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(fullName)->getNodeProperty (THREE)))->toSTL () << ":" << seqName <<std::endl;
                 }
                 myfile.close();
             }
@@ -2653,12 +2666,7 @@ main (int args, char **argv)
 		else
 			throw Exception ("Unknown deletion method: " + deleteMeth + ".");
 
-		//Write sequences to file:
-		bool
-			renameSeqs =
-			ApplicationTools::getBooleanParameter ("rename.sequences",
-			phylomerge.getParams (),
-			false, "", true, false);
+			//writing the sequences to file.
 			AlignedSequenceContainer asc (alphabet);
 			for (unsigned int i = 0; i < seqNames.size (); i++)
 				if (!asc.hasSequence (seqNames[i]))

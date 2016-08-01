@@ -10,4 +10,8 @@ for i in test3.fa ; do ../phylomerge input.sequence.file=$i input.method=tree in
 #### Test 4: testing that we can rearrange the tree if we have low bootstrap support, reverse link file: 5 sequences expected
 for i in test3.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge taxon.to.sequence=${i/.fa}.reverselink  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas rearrange.tree=y bootstrap.threshold=0.7; done
 
+#### Test 5: Make sure that we don't rename the sequences when we don't want to, by looking at testTaxToSeq.link.
+for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=test.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas output.taxon.to.sequence=testTaxToSeq.link rename.sequences=no ; done
 
+#### Test 6: Testing the ability to select the species we want to refine.
+for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=test.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas output.taxon.to.sequence=testTaxToSeq.link rename.sequences=no taxons.to.refine=testRefine.txt; done
