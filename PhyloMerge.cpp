@@ -87,7 +87,7 @@ sep = "%";
 
 
 //Compilation:
-//g++  -pipe -o phylomerge bppPhyloSampler.cpp -I/usr/local/include  -L. -L/usr/local/lib  -g -Wall -fopenmp -std=c++0x -lbpp-core -lbpp-seq -lbpp-phyl
+//g++  -pipe -o phylomerge PhyloMerge.cpp -I/usr/local/include  -L. -L/usr/local/lib  -g -Wall -std=c++0x -lbpp-core -lbpp-seq -lbpp-phyl
 
 using
 namespace
@@ -449,17 +449,10 @@ getBootstrapValueOnBranchBetweenTheseTwoNodes (Node * it, Node * next)
 /****************************************************************
  * Moves cutNode to be placed next to newBrother
  ****************************************************************/
-void
-group (Node * newBrother, Node * cutNode, TreeTemplate < Node > &tree)
+void group (Node * newBrother, Node * cutNode, TreeTemplate < Node > &tree)
 {
-	Node *
-		oldFather, *
-		oldGrandFather, *
-		brother, *
-		newBrothersFather, *
-		N;
-	double
-		dist = 0.12345;
+	Node * oldFather, *oldGrandFather, *brother, *newBrothersFather, *N;
+	double dist = 0.12345;
 	bool wasRoot = false;
 	if (tree.getRootNode () != newBrother)
 	{
@@ -482,10 +475,8 @@ group (Node * newBrother, Node * cutNode, TreeTemplate < Node > &tree)
 	if (!(oldFather->hasFather ()))
 	{							 //we displace the outgroup, need to reroot the tree
 		//NB : brother is the other son of the root
-		int
-			id0 = oldFather->getId ();
-		int
-			idBrother = brother->getId ();
+		int id0 = oldFather->getId ();
+		int idBrother = brother->getId ();
 		N = new Node ();
 
 		N->addSon (newBrother);
@@ -535,8 +526,7 @@ group (Node * newBrother, Node * cutNode, TreeTemplate < Node > &tree)
 	}
 	else
 	{
-		int
-			id0 = oldFather->getId ();
+		int	id0 = oldFather->getId ();
 		//we create a new node N which will be the father of cutNode and newBrother
 		N = new Node ();
     N->setId(3000000);
@@ -678,8 +668,7 @@ size_t i, const string species)
 }
 
 
-void
-searchForConnectedComponents (Node * node,
+void searchForConnectedComponents (Node * node,
 vector < vector < Node * > >&connectedNodes,
 const string & species)
 {
@@ -743,55 +732,22 @@ const std::map < std::string, std::string > &seqSp)
 	{
 		for (size_t j = i + 1; j < connectedNodes.size (); ++j)
 		{
-			if (j != i + 1)
+			if (j != i + 1) // No need to do that the first time, because it has been done above.
 			{
-
-				//We reroot the tree by a leaf : NOT SURE WHETHER IT IS USEFUL OR NOT. LEADS TO SEGFAULTS BECAUSE CAN DELETE NODE.
-			/*	Node *
-					newOutgroup = tree.getLeaves ()[0];
-				tree.newOutGroup (newOutgroup);
-				if (!tree.isRooted ())
-				{
-					//std::cout << "Tree not rooted, rerooting." << std::endl;
-					tree.newOutGroup (tree.getLeaves ()[1]);
-				}
-
-				if (!newOutgroup->hasDistanceToFather ())
-				{
-					Node *
-						father = newOutgroup->getFather ();
-					Node *
-						brother;
-					if (father->getSon (0) == newOutgroup)
-					{
-						brother = father->getSon (1);
-					}
-					else
-					{
-						brother = father->getSon (0);
-					}
-					double
-						dist = brother->getDistanceToFather ();
-					brother->setDistanceToFather (dist / 2);
-					newOutgroup->setDistanceToFather (dist / 2);
-				}
-				else
-				{
-				}*/
-
 				annotateTreeWithSpecies (tree, seqSp);
-
 			}
 
-			vector < Node * >path =
+			// path between the two connected components
+			vector < Node * > path =
 				TreeTemplateTools::getPathBetweenAnyTwoNodes (*
 				(connectedNodes[i]
 				[0]),
 				*(connectedNodes[j]
 				[0]));
 
-			//We have the path. We are only interested in nodes not annotated with the species of interest
-			vector < Node * >pathBetweenComponents;
+			// We have the path. We are only interested in nodes not annotated with the species of interest
+			// i.e. that are between the components, plus entry nodes into each component.
+			vector < Node * > pathBetweenComponents;
 			size_t index = 0;
 			for (auto it = path.begin (); it != path.end (); ++it)
 			{
@@ -799,7 +755,7 @@ const std::map < std::string, std::string > &seqSp)
 				{
 					if (pathBetweenComponents.size () == 0)
 					{
-						pathBetweenComponents.push_back (path[index - 1]);
+						pathBetweenComponents.push_back (path[index - 1]); // Should always be ok, the node 0 is from the species.
 					}
 					pathBetweenComponents.push_back (*it);
 				}
@@ -810,17 +766,24 @@ const std::map < std::string, std::string > &seqSp)
 				}
 				index++;
 			}
-// 			std::cout <<
-// 				"groupSequencesFromSpecies 3; pathBetweenComponents.size(): " <<
-// 				pathBetweenComponents.size () << "; List of nodes in the path: "
-// 				<< std::endl;
-// 			for (auto it = pathBetweenComponents.begin ();
-// 				it != pathBetweenComponents.end (); ++it)
-// 			{
-// 				std::cout << (*it)->getId () << std::endl;
-// 			}
 
-			//Now we have the path between the components, with one node in the first component, and one in the last
+
+//DEBUGGING
+			// Nhx *nhx = new Nhx ();
+      // nhx->write (tree, cout);
+      // delete nhx;
+			// std::cout <<
+			// 	"groupSequencesFromSpecies 3; pathBetweenComponents.size(): " <<
+			// 	pathBetweenComponents.size () << "; List of nodes in the path: "
+			// 	<< std::endl;
+			// for (auto it = pathBetweenComponents.begin ();
+			// 	it != pathBetweenComponents.end (); ++it)
+			// {
+			// 	std::cout << (*it)->getId () << std::endl;
+			// }
+//DEBUGGING
+
+			//Now we have the path between the components, with one node in the first component, and one in the last.
 			//Does any of these nodes include a high bootstrap branch, which would mean we can't join them?
 			bool canJoinThem = !pathBetweenComponents.empty ();
 			if (canJoinThem)
@@ -835,7 +798,6 @@ const std::map < std::string, std::string > &seqSp)
 					Node *
 						next = *(it + 1);
 
-
 					//Find the branch on which we want to check the bootstrap
 					if (!
 						((*it) == tree.getRootNode ()
@@ -846,6 +808,7 @@ const std::map < std::string, std::string > &seqSp)
 							bootstrap =
 							getBootstrapValueOnBranchBetweenTheseTwoNodes (*it,
 							next);
+							//std::cout << "BOOTSTRAP: "<< bootstrap << std::endl;
 						if (bootstrap > 1)
 						{
 							bootstrap = bootstrap / 100.0;
@@ -853,7 +816,7 @@ const std::map < std::string, std::string > &seqSp)
 						if (bootstrap > bootstrapThreshold)
 						{
 							canJoinThem = false;
-						//	break; I don't remember why we may want to break here.
+							break; // we know we cannot join the components
 						}
 					}
 				}
@@ -867,14 +830,16 @@ const std::map < std::string, std::string > &seqSp)
 				Node *
 					node2 = *(pathBetweenComponents.end () - 1);
 				if (!
-					(node1->hasFather ()
-					&& node1->getFather () == pathBetweenComponents[1]))
+					( node1->hasFather ()
+					&& node1->getFather () == pathBetweenComponents[1] ) )
 				{
 					group (node1, node2, tree);
 				}
 				else
 				{
 					group (node2, node1, tree);
+//					group (node1, node2, tree);
+
 				}
 				weHaveDoneARearrangement = true;
         return weHaveDoneARearrangement;
@@ -943,9 +908,7 @@ const double &bootstrapThreshold)
 /****************************************************************
  * Merges sequences to produce one new sequence.
  ****************************************************************/
-string
-buildMergedSequence (vector < string > &descendantSequences,
-const VectorSiteContainer & seqs)
+string buildMergedSequence (vector < string > &descendantSequences, const VectorSiteContainer & seqs)
 {
 	vector < string > uniqueSequences =
 		VectorTools::unique (descendantSequences);
@@ -1794,7 +1757,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 							TreeTemplateTools::getLeavesNames
 							(*(node->getSon (0))));
 
-						VectorTools::print (temp);
+						//VectorTools::print (temp);
 
 						if (speciesToRefine.count (nodeSon1Taxa1) != 0
 							|| speciesToRefine.size () == 0)
@@ -1848,7 +1811,7 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 						VectorTools::append (temp,
 							TreeTemplateTools::getLeavesNames
 							(*(node->getSon (0))));
-						VectorTools::print (temp);
+						//VectorTools::print (temp);
 
 						if (speciesToRefine.count (nodeSon1Taxa2) != 0
 							|| speciesToRefine.size () == 0)
@@ -2625,8 +2588,7 @@ main (int args, char **argv)
 
 			vector < string > sequencesAncestor;
       vector < string > sequencesAlreadyHandled;
-			seqNames =
-				selectSequencesToKeep (*tree, tree->getRootNode (),
+			seqNames = selectSequencesToKeep (*tree, tree->getRootNode (),
 				sequencesAncestor, critMeth, *seqs,
 				speciesToRefine, sequencesAlreadyHandled);
 
@@ -2636,16 +2598,18 @@ main (int args, char **argv)
 
 			ApplicationTools::displayResult ("Number of sequences kept:",
 				seqNames.size ());
-				VectorTools::print(seqNames);
+				//VectorTools::print(seqNames);
             //Now we output a file containing the link between species name and sequence name
             TreeTemplate < Node > *treeCopy = tree->clone();
-            std::vector<Node*> leaves = treeCopy->getLeaves();
-            for (size_t i = 0; i < leaves.size(); ++i) {
-							std::string spName = (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL ();
-							if (speciesToRefine.count (spName) != 0 || speciesToRefine.size () == 0) {
-                leaves[i]->setName( spName + sep + leaves[i]->getName() );
-							}
-            }
+						if (renameSeqs) {
+	            std::vector<Node*> leaves = treeCopy->getLeaves();
+	            for (size_t i = 0; i < leaves.size(); ++i) {
+								std::string spName = (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL ();
+								if (speciesToRefine.count (spName) != 0 || speciesToRefine.size () == 0) {
+	                leaves[i]->setName( spName + sep + leaves[i]->getName() );
+								}
+	            }
+						}
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
             {
@@ -2658,10 +2622,13 @@ main (int args, char **argv)
 										size_t pos = fullName.find(sep);
 										seqName = fullName.substr(pos+1);
 									}
+									//std::cout << "fullName: " << fullName << " seqName: "<< seqName <<std::endl;
+									//VectorTools::print(treeCopy->getLeavesNames());
 										myfile << (dynamic_cast < const BppString * >(treeCopy->getNode(fullName)->getNodeProperty (THREE)))->toSTL () << ":" << seqName <<std::endl;
                 }
                 myfile.close();
             }
+
 		}
 		else
 			throw Exception ("Unknown deletion method: " + deleteMeth + ".");
@@ -2684,6 +2651,7 @@ main (int args, char **argv)
 				}
 				asc.setSequencesNames ( nNames );
 			}
+
 			SequenceApplicationTools::writeAlignmentFile (asc, phylomerge.getParams ());
 		if (dist)
 			delete dist;
@@ -2766,3 +2734,41 @@ main (int args, char **argv)
    Newick newick;
    newick.write (*(nj.getTree() ), outTreePath);
    } */
+
+
+
+
+
+	 /*
+	 //We reroot the tree by a leaf : NOT SURE WHETHER IT IS USEFUL OR NOT. LEADS TO SEGFAULTS BECAUSE CAN DELETE NODE.
+	 Node *
+		 newOutgroup = tree.getLeaves ()[0];
+	 tree.newOutGroup (newOutgroup);
+	 if (!tree.isRooted ())
+	 {
+		 //std::cout << "Tree not rooted, rerooting." << std::endl;
+		 tree.newOutGroup (tree.getLeaves ()[1]);
+	 }
+
+	 if (!newOutgroup->hasDistanceToFather ())
+	 {
+		 Node *
+			 father = newOutgroup->getFather ();
+		 Node *
+			 brother;
+		 if (father->getSon (0) == newOutgroup)
+		 {
+			 brother = father->getSon (1);
+		 }
+		 else
+		 {
+			 brother = father->getSon (0);
+		 }
+		 double
+			 dist = brother->getDistanceToFather ();
+		 brother->setDistanceToFather (dist / 2);
+		 newOutgroup->setDistanceToFather (dist / 2);
+	 }
+	 else
+	 {
+	 }*/

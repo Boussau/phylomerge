@@ -15,3 +15,8 @@ for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree inp
 
 #### Test 6: Testing the ability to select the species we want to refine.
 for i in test.fa ; do ../phylomerge input.sequence.file=$i input.method=tree input.tree.file=${i/.fa}.tree choice.criterion=merge sequence.to.taxon=test.link  prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=${i/.fa}_Selected.fas output.taxon.to.sequence=testTaxToSeq.link rename.sequences=no taxons.to.refine=testRefine.txt; done
+
+
+#### Test 7
+for i in test4.fa ; do ../phylomerge input.sequence.file=test4.fa input.method=tree input.tree.file=test4.tree choice.criterion=merge taxon.to.sequence=test4.reverselink prescreening.on.size.by.taxon=no deletion.method=taxon selection.by.taxon=yes output.sequence.file=test4_Selected.fas rearrange.tree=y bootstrap.threshold=0.7 prescreening.on.size.by.taxon=no selection.by.taxon=yes rearrange.tree=yes bootstrap.threshold=0.8 output.taxon.to.sequence=test4_Selected.sp2seq.txt taxons.to.refine=testRefine.txt; done
+
