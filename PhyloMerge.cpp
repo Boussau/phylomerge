@@ -955,8 +955,7 @@ string buildMergedSequence (vector < string > &descendantSequences, const Vector
 /****************************************************************
  * Select only one sequence in a vector of sequence names.
  ****************************************************************/
-string
-selectSequenceAmongSequences (vector < string > &descendantSequences,
+string selectSequenceAmongSequences (vector < string > &descendantSequences,
 string critMeth, VectorSiteContainer & seqs,
 string name )
 {
@@ -986,9 +985,7 @@ string name )
 	{
 		string seq = buildMergedSequence (descendantSequences, seqs);
 		BasicSequence
-			bseq =
-			BasicSequence (name + sep + descendantSequences[0], seq,
-			seqs.getAlphabet ());
+			bseq = BasicSequence (name + sep + descendantSequences[0], seq, seqs.getAlphabet ());
 		if (!seqs.hasSequence (name + sep + descendantSequences[0]))
 			seqs.addSequence (bseq);
 		return name + sep + descendantSequences[0];
@@ -2596,20 +2593,20 @@ main (int args, char **argv)
 				// We remove them.
 				seqNames = VectorTools::unique(seqNames);
 
-			ApplicationTools::displayResult ("Number of sequences kept:",
-				seqNames.size ());
+			ApplicationTools::displayResult ("Number of sequences kept:",	seqNames.size ());
 				//VectorTools::print(seqNames);
             //Now we output a file containing the link between species name and sequence name
             TreeTemplate < Node > *treeCopy = tree->clone();
-						if (renameSeqs) {
-	            std::vector<Node*> leaves = treeCopy->getLeaves();
-	            for (size_t i = 0; i < leaves.size(); ++i) {
-								std::string spName = (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL ();
-								if (speciesToRefine.count (spName) != 0 || speciesToRefine.size () == 0) {
-	                leaves[i]->setName( spName + sep + leaves[i]->getName() );
-								}
-	            }
-						}
+            std::vector<Node*> leaves = treeCopy->getLeaves();
+            for (size_t i = 0; i < leaves.size(); ++i) {
+							std::string spName = (dynamic_cast < const BppString * >(leaves[i]->getNodeProperty (THREE)))->toSTL ();
+							if (speciesToRefine.count (spName) != 0 || speciesToRefine.size () == 0) {
+								string fullName = spName + sep + leaves[i]->getName();
+								if (VectorTools::contains(seqNames, fullName))
+                	leaves[i]->setName( fullName );
+							}
+            }
+
             std::string outputLinkFile = ApplicationTools::getAFilePath ("output.taxon.to.sequence", phylomerge.getParams (), false, false);
             if (outputLinkFile != "none")
             {
