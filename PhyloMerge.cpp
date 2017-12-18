@@ -115,7 +115,7 @@ help ()
 		" - deletion.method='threshold' ou 'random' ou 'sample' ou 'taxon'. 'threshold' removes sequences that are so close in the tree that their distance is lower than the 'threshold' value (which is given as another option to the program, default is 0.01). 'sample': random choice of sample_size sequences (default is 10). 'taxon': choice is guided by the identity of the species the sequences come from. In cases several sequences from the same species are monophyletic, a choice will be made according to the 'choice.criterion' option").endLine
 		();
 	(*ApplicationTools::message <<
-		" - choice.criterion='length' ou  'length.complete' ou 'merge'. 'length' means the longest sequence is selected. 'length.complete' : means the largest number of complete sites (no gaps). 'merge' means that the set of monophyletic sequences is used to build one long 'chimera' sequence corresponding to the merging of them.").endLine
+		" - choice.criterion='length' ou  'length.complete' ou 'merge'. 'length' means the longest sequence is selected. 'length.complete' : means the largest number of complete sites (no gaps). 'merge' means that the set of monophyletic sequences is used to build one long 'chimera' sequence corresponding to the merging of them. ").endLine
 		();
 	(*ApplicationTools::
 		message << " - selection.by.taxon='no' ou 'yes'").endLine ();
@@ -940,7 +940,7 @@ string buildMergedSequence (vector < string > &descendantSequences, const Vector
 	VectorSiteContainer *
 		selSeqsSites = new VectorSiteContainer (*selSeqs);
 	//              Sequence* sequence = SiteContainerTools::getConsensus(*(dynamic_cast <const SiteContainer*> (selSeqs) ), "consensus", true, false);
-	Sequence *
+	const Sequence *
 		sequence =
 		SiteContainerTools::getConsensus (*selSeqsSites, "consensus", true,
 		false);
@@ -1504,7 +1504,11 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 		if (nodeTaxa1 == nodeTaxa2 && nodeTaxa1 == nodeTaxa3	&& nodeTaxa1 != "#")
 		{						 //All the sequences are from the same taxon
 			vector < string > temp = VectorTools::vectorUnion (seqs0, seqs1);
-			temp.push_back (node->getName ());
+			/*if (! node->hasName() )
+		  {
+				node->setName("RootNode");
+			}
+			temp.push_back (node->getName ());*/
 			sequenceDistances =
 				computeDistanceBetweenLeavesAndAncestor (tree, *node, temp);
 			sortVectorGivenMap (temp, sequenceDistances);
@@ -2221,16 +2225,15 @@ main (int args, char **argv)
 			}
 
 			//Now we have sequences to remove
+			std::cout << "Removing sequences from the alignment because they are from undesired species." << std::endl;
+
 			vector < string > seqNames = seqs->getSequencesNames ();
-
 			vector < string > seqsToKeep;
-
 			vector < string > seqsToRemove;
 
 			if (sequencesToRemove.size () > 0)
 			{
 				VectorTools::diff (seqNames, sequencesToRemove, seqsToKeep);
-
 				for (unsigned int i = 0; i < sequencesToRemove.size (); i++)
 				{
 					std::cout << "Removing sequence " << sequencesToRemove[i] <<
@@ -2246,12 +2249,21 @@ main (int args, char **argv)
 			}
 			string nomi, nomj;
 
-			//Instead we prune leaves
+			std::cout << "Pruning leaves from undesired species from the tree." << std::endl;
+
+			//We prune leaves
 			for (unsigned int i = 0; i < sequencesToRemove.size (); i++)
 			{
 				TreeTemplateTools::dropLeaf (*tree, sequencesToRemove[i]);
 			}
 			sequencesToRemove.clear ();
+			std::cout << "Leaves pruned from the tree." << std::endl;
+
+			std::cout << "Pruning leaves from undesired species from the distance matrix." << std::endl;
+			delete dist;
+			dist = TreeTemplateTools::getDistanceMatrix (*tree);
+			std::cout << "Leaves pruned from the distance matrix." << std::endl;
+
 
 			///////////////////////////////////////////////////
 			//Selecting sequences from which we want to do the selection
@@ -2452,7 +2464,7 @@ main (int args, char **argv)
 						Exception
 						("Error, all sequences have been removed with this criterion!");
 			}
-			ApplicationTools::displayResult ("Number of sequences kept:",
+			ApplicationTools::displayResult ("Number of sequences kept2:",
 				seqNames.size ());
 		}
 		else if (deleteMeth == "sample")
@@ -2581,10 +2593,17 @@ main (int args, char **argv)
       std::cout << "Rearranged and annotated tree:" <<std::endl;
       Nhx *nhx = new Nhx ();
       nhx->write (*tree, cout);
+			std::string outputTreeFile = ApplicationTools::getAFilePath ("output.tree.file", phylomerge.getParams (), false, false);
+			ofstream fout( outputTreeFile.c_str() );
+			nhx->write (*tree, fout);
+			fout.close();
       delete nhx;
+
+
 
 			vector < string > sequencesAncestor;
       vector < string > sequencesAlreadyHandled;
+			std::cout  << "critMeth: "<< critMeth << " ; speciesToRefine.size(): "<< speciesToRefine.size() <<std::endl;
 			seqNames = selectSequencesToKeep (*tree, tree->getRootNode (),
 				sequencesAncestor, critMeth, *seqs,
 				speciesToRefine, sequencesAlreadyHandled);
