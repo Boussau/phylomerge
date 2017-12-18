@@ -1639,18 +1639,15 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								(*
 								(node->getSon (0)->getSon
 								(0))));
-                lookForMoreDownstreamSequencesFromSpecies(node->getSon(0)->getSon(1), temp, nodeSon0Taxa1);
+							lookForMoreDownstreamSequencesFromSpecies(node->getSon(0)->getSon(1), temp, nodeSon0Taxa1);
 						}
-						VectorTools::append (temp,
-							TreeTemplateTools::getLeavesNames
-							(*(node->getSon (1))));
 						if (speciesToRefine.count (nodeSon0Taxa1) != 0
 							|| speciesToRefine.empty () )
 						{
-           updateSequencesAlreadyHandled(sequencesAlreadyHandled, temp);
+							updateSequencesAlreadyHandled(sequencesAlreadyHandled, temp);
               if (! temp.empty() ) {
-							if (critMeth == "merge")
-								selectedSeqs.push_back
+								if (critMeth == "merge")
+									selectedSeqs.push_back
 									(selectSequenceAmongSequences
 									(temp, critMeth, seqs, nodeSon0Taxa1));
 							else
@@ -1670,6 +1667,18 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								selectSequencesToKeep (tree,
 								node->getSon
 								(0)->getSon
+								(1),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
+						else
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
 								(1),
 								sequencesAncestor,
 								critMeth,
@@ -1698,9 +1707,6 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
               // Therefore we need to get the species annotations for this other subtree.
                lookForMoreDownstreamSequencesFromSpecies(node->getSon(0)->getSon(0), temp, nodeSon0Taxa2);
 						}
-						VectorTools::append (temp,
-							TreeTemplateTools::getLeavesNames
-							(*(node->getSon (1))));
 						if (speciesToRefine.count (nodeSon0Taxa2) != 0
 							|| speciesToRefine.size () == 0)
 						{
@@ -1733,6 +1739,18 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								seqs,
 								speciesToRefine, sequencesAlreadyHandled));
 						}
+						else
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(1),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
 					}
 					else if (nodeSon1Taxa1 != "#")
 					{
@@ -1750,10 +1768,6 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								(0))));
                 lookForMoreDownstreamSequencesFromSpecies(node->getSon(1)->getSon(1), temp, nodeSon0Taxa1);
 						}
-						VectorTools::append (temp,
-							TreeTemplateTools::getLeavesNames
-							(*(node->getSon (0))));
-
 						//VectorTools::print (temp);
 
 						if (speciesToRefine.count (nodeSon1Taxa1) != 0
@@ -1788,6 +1802,18 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								seqs,
 								speciesToRefine, sequencesAlreadyHandled));
 						}
+						else
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(0),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
+						}
 					}
 					else if (nodeSon1Taxa2 != "#")
 					{
@@ -1805,9 +1831,6 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 								(1))));
               lookForMoreDownstreamSequencesFromSpecies(node->getSon(1)->getSon(0), temp, nodeSon0Taxa1);
 						}
-						VectorTools::append (temp,
-							TreeTemplateTools::getLeavesNames
-							(*(node->getSon (0))));
 						//VectorTools::print (temp);
 
 						if (speciesToRefine.count (nodeSon1Taxa2) != 0
@@ -1841,6 +1864,18 @@ vector < string > selectSequencesToKeep (TreeTemplate < Node > &tree, Node * nod
 							critMeth,
 							seqs,
 							speciesToRefine, sequencesAlreadyHandled));
+						}
+						else
+						{
+							//Continue the recursion
+							VectorTools::append (selectedSeqs,
+								selectSequencesToKeep (tree,
+								node->getSon
+								(0),
+								sequencesAncestor,
+								critMeth,
+								seqs,
+								speciesToRefine, sequencesAlreadyHandled));
 						}
 					}
 				}
