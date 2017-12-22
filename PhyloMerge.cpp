@@ -54,16 +54,15 @@ using namespace std;
 #include <Bpp/Numeric/Random/RandomTools.h>
 
 // From SeqLib:
-#include <Bpp/Seq/Alphabet.all>
-#include <Bpp/Seq/Container.all>
-#include <Bpp/Seq/Io.all>
+#include <Bpp/Seq/Container/SequenceContainerTools.h>
+#include <Bpp/Seq/Container/SiteContainerTools.h>
 #include <Bpp/Seq/SiteTools.h>
 #include <Bpp/Seq/SequenceTools.h>
 #include <Bpp/Seq/App/SequenceApplicationTools.h>
 
 // From PhylLib:
 #include <Bpp/Phyl/Tree.h>
-#include <Bpp/Phyl/Distance.all>
+#include <Bpp/Phyl/Distance/BioNJ.h>
 #include <Bpp/Phyl/App/PhylogeneticsApplicationTools.h>
 #include <Bpp/Phyl/Io/PhylipDistanceMatrixFormat.h>
 #include <Bpp/Phyl/Io/Nhx.h>
